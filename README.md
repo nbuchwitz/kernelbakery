@@ -28,7 +28,62 @@ all their kernels and modules in binary form dating back to 2012. That's why
 this repo was stripped of the git history as well as files which can be rebuilt
 from the kernel source tree.
 
-# Intended usage
+# Usage (Docker)
+
+Build official 32-bit Kernel (v6 / v7 / v7l):
+
+```
+docker run -it --rm \
+    -v $PWD:/output \
+    revpi/kernelbakery:buster
+```
+
+Build 64-bit Kernel (v8):
+
+```
+docker run -it --rm \
+    -e ARCH=arm64 \
+    -v $PWD:/output \
+    revpi/kernelbakery:bullseye
+```
+
+## Customization
+
+### Local sources
+
+If you want to use your local copy of the `linux` or `piControl` repository, you mount the paths in the build container. If the container detects an already existing folder `/build/linux` or `/build/piControl` it will not try to clone the repository.
+
+The following example will mount the existing sources (`./linux` and `./piControl`):
+```
+docker run -it --rm \
+    -v $PWD/linux:/build/linux \
+    -v $PWD/piControl:/build/piControl \
+    -v $PWD:/output \
+    revpi/kernelbakery:buster
+```
+
+### Override GIT repository and/or branch
+
+You could also specify the GIT branch or even specify a custom URL for the repositories:
+
+| ENV var | Purpose |
+| --- | --- |
+| `GIT_KERNEL_BRANCH` | Branch for the kernel sources |
+| `GIT_KERNEL_REPO` | Repository URL for the kernel sources |
+| `GIT_PICONTROL_BRANCH` | Branch for the piControl sources |
+| `GIT_PICONTROL_REPO` | Repository URL for the piControl sources |
+
+## Build container locally
+
+Change the value `RELEASE` to the Debian release that the container should use: 
+```
+RELEASE=buster
+docker build . \
+    --build-arg "DEBIAN_RELEASE=$RELEASE" \
+    --tag revpi/kernelbakery:$RELEASE
+```
+
+# Manual usage
 
 This procedure was tested successfully on Debian buster amd64, but YMMV.
 Building the kernel with update.sh is idempotent. If it fails, e.g. due to
