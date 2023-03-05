@@ -43,7 +43,7 @@ copy_files() {
 
     (
         cd linux
-        make "${make_opts[@]}" -j"$NPROC" INSTALL_KBUILD_PATH="../$destdir" kbuild_install
+        #make "${make_opts[@]}" -j"$NPROC" INSTALL_KBUILD_PATH="../$destdir" kbuild_install
     )
 }
 
@@ -65,7 +65,7 @@ if [ -n "$PIKERNELMODDIR" ]; then
 fi
 
 HOST_ARCH="$(uname -m)"
-ARCH=${ARCH:-arm}
+ARCH=${ARCH:-arm64}
 case "$ARCH" in
 arm)
     if ! grep -q -E "armv(6l|7|7l)" <<<"$HOST_ARCH"; then
@@ -112,7 +112,7 @@ rm -f "$INSTDIR/boot/broadcom"/*.dtb "$INSTDIR/boot"/*.dtb "$INSTDIR/boot/overla
 rm -rf modules/*
 
 for kernel_version in $kernel_versions; do
-    defconfig="revpi-v${kernel_version}_defconfig"
+    defconfig="bcm2711_defconfig"
     test -f "linux/arch/${ARCH}/configs/$defconfig" || continue
     builddir=${BUILDDIR_TEMPLATE}${kernel_version/6/}
     make_opts[-1]="O=${builddir}"
