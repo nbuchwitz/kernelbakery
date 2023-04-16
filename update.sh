@@ -89,7 +89,6 @@ esac
 
 INSTDIR=$(dirname "$0")
 if [ "${INSTDIR#/}" == "$INSTDIR" ]; then INSTDIR="$PWD/$INSTDIR"; fi
-INSTDIR=${INSTDIR%%/debian}
 BUILDDIR_TEMPLATE=$INSTDIR/kbuild
 KBUILD_BUILD_TIMESTAMP="$(dpkg-parsechangelog -STimestamp)"
 export KBUILD_BUILD_TIMESTAMP
@@ -198,7 +197,5 @@ rmdir /tmp/dtb.$$/* /tmp/dtb.$$
 echo "_ _ $version" >extra/uname_string
 
 find headers -name .gitignore -delete
-(
-    cd debian
-    ./gen_bootloader_postinst_preinst.sh
-)
+
+./gen_bootloader_postinst_preinst.sh
